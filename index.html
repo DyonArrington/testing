@@ -32,6 +32,7 @@
             padding: 15px;
             text-decoration: none;
             text-align: center;
+            cursor: pointer;
         }
 
         nav a:hover {
@@ -75,6 +76,16 @@
         th, td {
             text-align: center;
         }
+
+        /* Hide all sections initially */
+        .section {
+            display: none;
+        }
+
+        /* Show active section */
+        .section.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -84,57 +95,74 @@
 </header>
 
 <nav>
-    <a href="#">Home</a>
-    <a href="#">Annual Reports</a>
-    <a href="#">Quarterly Reports</a>
-    <a href="#">Combined Usage</a>
-    <a href="#">System Breakdown</a>
+    <a onclick="showSection('home')">Home</a>
+    <a onclick="showSection('annualReports')">Annual Reports</a>
+    <a onclick="showSection('quarterlyReports')">Quarterly Reports</a>
+    <a onclick="showSection('combinedUsage')">Combined Usage</a>
+    <a onclick="showSection('systemBreakdown')">System Breakdown</a>
 </nav>
 
 <div class="container">
-    <h2>Water Usage Overview (1999-2024)</h2>
-    <div class="charts-container">
-        <div class="chart">
-            <canvas id="annualUsageChart"></canvas>
-        </div>
-        <div class="chart">
-            <canvas id="systemComparisonChart"></canvas>
+    <!-- Home Section -->
+    <div id="home" class="section active">
+        <h2>Welcome to the Water Utility Usage Tracker</h2>
+        <p>Use the navigation tabs to explore different water usage reports and visualizations.</p>
+    </div>
+
+    <!-- Annual Reports Section -->
+    <div id="annualReports" class="section">
+        <h2>Annual Water Usage (1999-2024)</h2>
+        <div class="charts-container">
+            <div class="chart">
+                <canvas id="annualUsageChart"></canvas>
+            </div>
         </div>
     </div>
 
-    <h2>Production Data Table</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Year</th>
-                <th>System</th>
-                <th>Ground Water (AF)</th>
-                <th>CAP Water (AF)</th>
-                <th>Reclaimed Water (AF)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Example Data -->
-            <tr>
-                <td>2020</td>
-                <td>10-165</td>
-                <td>1200</td>
-                <td>800</td>
-                <td>600</td>
-            </tr>
-            <tr>
-                <td>2020</td>
-                <td>10-174</td>
-                <td>1500</td>
-                <td>700</td>
-                <td>-</td>
-            </tr>
-            <!-- Add more rows as needed -->
-        </tbody>
-    </table>
+    <!-- Quarterly Reports Section -->
+    <div id="quarterlyReports" class="section">
+        <h2>Quarterly Water Production</h2>
+        <div class="charts-container">
+            <div class="chart">
+                <canvas id="quarterlyUsageChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Combined Usage Section -->
+    <div id="combinedUsage" class="section">
+        <h2>Combined Water Usage for Systems 10-165 and 10-174</h2>
+        <div class="charts-container">
+            <div class="chart">
+                <canvas id="combinedUsageChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Breakdown Section -->
+    <div id="systemBreakdown" class="section">
+        <h2>Water Production by System</h2>
+        <div class="charts-container">
+            <div class="chart">
+                <canvas id="systemBreakdownChart"></canvas>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
+// Function to show the selected section
+function showSection(sectionId) {
+    // Hide all sections
+    const sections = document.querySelectorAll('.section');
+    sections.forEach(section => {
+        section.classList.remove('active');
+    });
+
+    // Show the selected section
+    document.getElementById(sectionId).classList.add('active');
+}
+
 // Sample data for charts
 const years = [1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
 const system165GroundWater = [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350];
@@ -197,9 +225,42 @@ const annualUsageChart = new Chart(ctx1, {
     }
 });
 
-// Chart 2: System Comparison
-const ctx2 = document.getElementById('systemComparisonChart').getContext('2d');
-const systemComparisonChart = new Chart(ctx2, {
+// Chart 2: Quarterly Usage
+const ctx2 = document.getElementById('quarterlyUsageChart').getContext('2d');
+const quarterlyUsageChart = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+        labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+        datasets: [
+            {
+                label: 'System 10-165 Ground Water',
+                data: [300, 400, 500, 600],
+                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+            },
+            {
+                label: 'System 10-174 Ground Water',
+                data: [500, 450, 400, 350],
+                backgroundColor: 'rgba(153, 102, 255, 0.6)'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        title: {
+            display: true,
+            text: 'Quarterly Water Production'
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Chart 3: Combined Usage
+const ctx3 = document.getElementById('combinedUsageChart').getContext('2d');
+const combinedUsageChart = new Chart(ctx3, {
     type: 'bar',
     data: {
         labels: years,
@@ -210,9 +271,19 @@ const systemComparisonChart = new Chart(ctx2, {
                 backgroundColor: 'rgba(54, 162, 235, 0.6)'
             },
             {
+                label: 'System 10-165 CAP Water',
+                data: system165CAPWater,
+                backgroundColor: 'rgba(255, 99, 132, 0.6)'
+            },
+            {
                 label: 'System 10-174 Ground Water',
                 data: system174GroundWater,
                 backgroundColor: 'rgba(153, 102, 255, 0.6)'
+            },
+            {
+                label: 'System 10-174 CAP Water',
+                data: system174CAPWater,
+                backgroundColor: 'rgba(255, 159, 64, 0.6)'
             }
         ]
     },
@@ -220,12 +291,38 @@ const systemComparisonChart = new Chart(ctx2, {
         responsive: true,
         title: {
             display: true,
-            text: 'Ground Water Production Comparison'
+            text: 'Combined Water Usage (AF)'
         },
         scales: {
             y: {
                 beginAtZero: true
             }
+        }
+    }
+});
+
+// Chart 4: System Breakdown
+const ctx4 = document.getElementById('systemBreakdownChart').getContext('2d');
+const systemBreakdownChart = new Chart(ctx4, {
+    type: 'pie',
+    data: {
+        labels: ['System 10-165', 'System 10-174'],
+        datasets: [
+            {
+                label: 'Water Production by System',
+                data: [60, 40],
+                backgroundColor: [
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(153, 102, 255, 0.6)'
+                ]
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        title: {
+            display: true,
+            text: 'Water Production by System (AF)'
         }
     }
 });
