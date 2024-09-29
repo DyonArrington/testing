@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Water Utility Usage Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #34495e;
+        }
+
+        nav a {
+            color: white;
+            padding: 15px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        nav a:hover {
+            background-color: #2980b9;
+        }
+
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .chart {
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        th, td {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Water Utility Usage Tracker</h1>
+</header>
+
+<nav>
+    <a href="#">Home</a>
+    <a href="#">Annual Reports</a>
+    <a href="#">Quarterly Reports</a>
+    <a href="#">Combined Usage</a>
+    <a href="#">System Breakdown</a>
+</nav>
+
+<div class="container">
+    <h2>Water Usage Overview (1999-2024)</h2>
+    <div class="charts-container">
+        <div class="chart">
+            <canvas id="annualUsageChart"></canvas>
+        </div>
+        <div class="chart">
+            <canvas id="systemComparisonChart"></canvas>
+        </div>
+    </div>
+
+    <h2>Production Data Table</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Year</th>
+                <th>System</th>
+                <th>Ground Water (AF)</th>
+                <th>CAP Water (AF)</th>
+                <th>Reclaimed Water (AF)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Example Data -->
+            <tr>
+                <td>2020</td>
+                <td>10-165</td>
+                <td>1200</td>
+                <td>800</td>
+                <td>600</td>
+            </tr>
+            <tr>
+                <td>2020</td>
+                <td>10-174</td>
+                <td>1500</td>
+                <td>700</td>
+                <td>-</td>
+            </tr>
+            <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+// Sample data for charts
+const years = [1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
+const system165GroundWater = [100, 150, 200, 250, 300, 350, 400, 450, 500, 550, 600, 650, 700, 750, 800, 850, 900, 950, 1000, 1050, 1100, 1150, 1200, 1250, 1300, 1350];
+const system165CAPWater = [50, 70, 90, 110, 130, 150, 170, 190, 210, 230, 250, 270, 290, 310, 330, 350, 370, 390, 410, 430, 450, 470, 490, 510, 530, 550];
+const system165ReclaimedWater = [30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155];
+
+const system174GroundWater = [200, 230, 260, 290, 320, 350, 380, 410, 440, 470, 500, 530, 560, 590, 620, 650, 680, 710, 740, 770, 800, 830, 860, 890, 920, 950];
+const system174CAPWater = [70, 90, 110, 130, 150, 170, 190, 210, 230, 250, 270, 290, 310, 330, 350, 370, 390, 410, 430, 450, 470, 490, 510, 530, 550, 570];
+
+// Chart 1: Annual Usage (Combined)
+const ctx1 = document.getElementById('annualUsageChart').getContext('2d');
+const annualUsageChart = new Chart(ctx1, {
+    type: 'line',
+    data: {
+        labels: years,
+        datasets: [
+            {
+                label: 'System 10-165 Ground Water',
+                data: system165GroundWater,
+                borderColor: 'rgba(54, 162, 235, 1)',
+                fill: false
+            },
+            {
+                label: 'System 10-165 CAP Water',
+                data: system165CAPWater,
+                borderColor: 'rgba(255, 99, 132, 1)',
+                fill: false
+            },
+            {
+                label: 'System 10-165 Reclaimed Water',
+                data: system165ReclaimedWater,
+                borderColor: 'rgba(75, 192, 192, 1)',
+                fill: false
+            },
+            {
+                label: 'System 10-174 Ground Water',
+                data: system174GroundWater,
+                borderColor: 'rgba(153, 102, 255, 1)',
+                fill: false
+            },
+            {
+                label: 'System 10-174 CAP Water',
+                data: system174CAPWater,
+                borderColor: 'rgba(255, 159, 64, 1)',
+                fill: false
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        title: {
+            display: true,
+            text: 'Annual Water Production (AF)'
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+// Chart 2: System Comparison
+const ctx2 = document.getElementById('systemComparisonChart').getContext('2d');
+const systemComparisonChart = new Chart(ctx2, {
+    type: 'bar',
+    data: {
+        labels: years,
+        datasets: [
+            {
+                label: 'System 10-165 Ground Water',
+                data: system165GroundWater,
+                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+            },
+            {
+                label: 'System 10-174 Ground Water',
+                data: system174GroundWater,
+                backgroundColor: 'rgba(153, 102, 255, 0.6)'
+            }
+        ]
+    },
+    options: {
+        responsive: true,
+        title: {
+            display: true,
+            text: 'Ground Water Production Comparison'
+        },
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+</body>
+</html>
