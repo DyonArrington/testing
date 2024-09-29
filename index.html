@@ -35,6 +35,10 @@
             cursor: pointer;
         }
 
+        nav a.active {
+            background-color: #2980b9;
+        }
+
         nav a:hover {
             background-color: #2980b9;
         }
@@ -95,11 +99,11 @@
 </header>
 
 <nav>
-    <a onclick="showSection('home')">Home</a>
-    <a onclick="showSection('annualReports')">Annual Reports</a>
-    <a onclick="showSection('quarterlyReports')">Quarterly Reports</a>
-    <a onclick="showSection('combinedUsage')">Combined Usage</a>
-    <a onclick="showSection('systemBreakdown')">System Breakdown</a>
+    <a id="homeTab" class="active" onclick="showSection('home', this)">Home</a>
+    <a id="annualReportsTab" onclick="showSection('annualReports', this)">Annual Reports</a>
+    <a id="quarterlyReportsTab" onclick="showSection('quarterlyReports', this)">Quarterly Reports</a>
+    <a id="combinedUsageTab" onclick="showSection('combinedUsage', this)">Combined Usage</a>
+    <a id="systemBreakdownTab" onclick="showSection('systemBreakdown', this)">System Breakdown</a>
 </nav>
 
 <div class="container">
@@ -151,16 +155,25 @@
 </div>
 
 <script>
-// Function to show the selected section
-function showSection(sectionId) {
+// Function to show the selected section and update the active tab
+function showSection(sectionId, tabElement) {
     // Hide all sections
     const sections = document.querySelectorAll('.section');
     sections.forEach(section => {
         section.classList.remove('active');
     });
 
+    // Remove active class from all tabs
+    const tabs = document.querySelectorAll('nav a');
+    tabs.forEach(tab => {
+        tab.classList.remove('active');
+    });
+
     // Show the selected section
     document.getElementById(sectionId).classList.add('active');
+
+    // Set the clicked tab as active
+    tabElement.classList.add('active');
 }
 
 // Sample data for charts
@@ -330,3 +343,4 @@ const systemBreakdownChart = new Chart(ctx4, {
 
 </body>
 </html>
+
